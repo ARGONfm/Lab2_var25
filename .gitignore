@@ -1,0 +1,23 @@
+# CMake
+build/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Исполняемые файлы
+Lab2_LinkedList
+*.exe
+*.out
+*.app
+
+# IDE
+.idea/
+.vscode/
+*.code-workspace
+*.iml
+
+# Всякое
+*~
+.DS_Store
