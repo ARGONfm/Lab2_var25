@@ -17,6 +17,7 @@ else()
 endif()
 
 add_executable(${PROJECT_NAME}
+    LinkedList.h
     main.cpp
 )
 

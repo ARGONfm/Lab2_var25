@@ -5,19 +5,70 @@ CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
 Makefile
+CMakeScripts/
+Testing/
 
-# Исполняемые файлы
-Lab2_LinkedList
+# === Исполняемые файлы и библиотеки ===
 *.exe
 *.out
 *.app
+*.obj
+*.o
+*.a
+*.so
+*.dll
+*.dylib
+*.pdb
+*.ilk
+*.lib
 
-# IDE
-.idea/
+# === VS Code ===
 .vscode/
 *.code-workspace
-*.iml
+!.vscode/settings.json        # если хочешь закоммитить свои настройки — удали эту строку
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
 
-# Всякое
-*~
+# === Visual Studio / CLion / Qt Creator ===
+.idea/
+*.iml
+*.iws
+*.ipr
+*.vcxproj.user
+*.sln
+*.suo
+*.sdf
+
+# === Windows ===
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# === macOS ===
 .DS_Store
+.AppleDouble
+.LSOverride
+
+# === Временные файлы ===
+*~
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+
+# === Логи и кэши ===
+*.log
+*.cache
+
+# === Папки сборки (любые) ===
+Debug/
+Release/
+x64/
+x86/
+bin/
+obj/
+
+# === Наш проект ===
+Lab2_LinkedList         # имя твоего exe (если собираешь без -o)

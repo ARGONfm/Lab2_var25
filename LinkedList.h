@@ -22,4 +22,15 @@ public:
 
     // Очистка списка
     void clear();
+    void LinkedList::clear() {
+        while (head != nullptr) {
+            Node<T>* temp = head;
+            head = head->next;
+            delete temp;
+        }
+    }
+
+    LinkedList::~LinkedList() {
+        clear();
+    }
 };
