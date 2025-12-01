@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.14)
 
 project(Lab2_LinkedList
     VERSION 1.0
-    DESCRIPTION "Односвязный список + вывод в обратном порядке"
+    DESCRIPTION
     LANGUAGES CXX
 )
 
@@ -17,7 +17,6 @@ else()
 endif()
 
 add_executable(${PROJECT_NAME}
-    LinkedList.h
     main.cpp
 )
 
