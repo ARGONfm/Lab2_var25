@@ -43,6 +43,8 @@ public:
     void push_head(const LinkedList& other);
     // Заполнение списка случайными значениями
     explicit LinkedList(size_t count, const T& min_val = T(), const T& max_val = T());
+    // Вывод списка в обратном порядке — задача №4
+    friend std::ostream& operator<<(std::ostream& os, const LinkedList& list);
 };
 
 template<typename T>
@@ -243,4 +245,22 @@ LinkedList<T>::LinkedList(size_t count, const T& min_val, const T& max_val) : he
             push_tail(min_val);
         }
     }
+}
+template<typename T>
+std::ostream& operator<<(std::ostream& os, const LinkedList<T>& list) {
+    if (list.head == nullptr) {
+        os << "(empty)";
+        return os;
+    }
+
+    // Рекурсивная лямбда — самый элегантный способ
+    std::function<void(const Node<T>*)> print_reverse = [&](const Node<T>* node) {
+        if (node == nullptr) return;
+        print_reverse(node->next);
+        os << node->data;
+        if (node->next != nullptr) os << ' ';
+        };
+
+    print_reverse(list.head);
+    return os;
 }
