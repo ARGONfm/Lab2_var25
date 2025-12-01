@@ -31,6 +31,9 @@ public:
     // Доступ по индексу (для чтения и записи)
     T& operator[](size_t index);
     const T& operator[](size_t index) const;
+    // Копирование и присваивание
+    LinkedList(const LinkedList& other);
+    LinkedList& operator=(const LinkedList& other);
 };
 template<typename T>
 void LinkedList<T>::clear() {
@@ -124,5 +127,25 @@ T LinkedList<T>::pop_tail() {
         if (curr == nullptr)
             throw std::out_of_range("operator[] const: index out of range");
         return curr->data;
+    }
+    template<typename T>
+    LinkedList<T>::LinkedList(const LinkedList& other) : head(nullptr) {
+        Node<T>* curr = other.head;
+        while (curr != nullptr) {
+            push_tail(curr->data);
+            curr = curr->next;
+        }
+    }
+
+    template<typename T>
+    LinkedList<T>& LinkedList<T>::operator=(const LinkedList& other) {
+        if (this == &other) return *this;
+        clear();
+        Node<T>* curr = other.head;
+        while (curr != nullptr) {
+            push_tail(curr->data);
+            curr = curr->next;
+        }
+        return *this;
     }
 }
