@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <random>
+#include <type_traits>
 
 template<typename T>
 struct Node {
@@ -39,6 +41,8 @@ public:
     // Добавление другого списка в конец/начало
     void push_tail(const LinkedList& other);
     void push_head(const LinkedList& other);
+    // Заполнение списка случайными значениями
+    explicit LinkedList(size_t count, const T& min_val = T(), const T& max_val = T());
 };
 
 template<typename T>
@@ -211,5 +215,32 @@ void LinkedList<T>::push_head(const LinkedList& other) {
         }
         tail_of_reversed->next = head;
         head = prev;
+    }
+}
+
+template<typename T>
+LinkedList<T>::LinkedList(size_t count, const T& min_val, const T& max_val) : head(nullptr) {
+    if (count == 0) return;
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    if constexpr (std::is_integral_v<T>) {
+        std::uniform_int_distribution<T> dist(min_val, max_val);
+        for (size_t i = 0; i < count; ++i) {
+            push_tail(dist(gen));
+        }
+    }
+    else if constexpr (std::is_floating_point_v<T>) {
+        std::uniform_real_distribution<T> dist(min_val, max_val);
+        for (size_t i = 0; i < count; ++i) {
+            push_tail(dist(gen));
+        }
+    }
+    else {
+        // Для всех остальных типов — просто копируем min_val
+        for (size_t i = 0; i < count; ++i) {
+            push_tail(min_val);
+        }
     }
 }
