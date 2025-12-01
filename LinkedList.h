@@ -4,13 +4,16 @@
 #include <stdexcept>
 #include <random>
 #include <type_traits>
+#include <functional>
 
 template<typename T>
 struct Node {
     T data;
     Node* next;
 
-    explicit Node(const T& value) : data(value), next(nullptr) {}
+    Node(const T& value = T(), Node* next_node = nullptr)
+        : data(value), next(next_node) {
+    }
 };
 
 template<typename T>
@@ -44,7 +47,24 @@ public:
     // Заполнение списка случайными значениями
     explicit LinkedList(size_t count, const T& min_val = T(), const T& max_val = T());
     // Вывод списка в обратном порядке — задача №4
-    friend std::ostream& operator<<(std::ostream& os, const LinkedList& list);
+    friend std::ostream& operator<<(std::ostream& os, const LinkedList& list) {
+        if (list.head == nullptr) {
+            os << "(empty)";
+            return os;
+        }
+
+        std::function<void(const Node<T>*)> print_reverse = [&](const Node<T>* node) {
+            if (node == nullptr) return;
+            print_reverse(node->next);
+            os << node->data;
+            if (node->next != nullptr) os << ' ';
+            };
+
+        print_reverse(list.head);
+        return os;
+    }
+    // Вывод в прямом порядке (для отладки)
+    void print_forward(std::ostream& os = std::cout) const;
 };
 
 template<typename T>
@@ -198,25 +218,15 @@ void LinkedList<T>::push_tail(const LinkedList& other) {
 
 template<typename T>
 void LinkedList<T>::push_head(const LinkedList& other) {
-    // Самый элегантный способ: копируем и разворачиваем вручную
-    Node<T>* prev = nullptr;
-    Node<T>* curr = other.head;
-
-    while (curr != nullptr) {
-        Node<T>* next = curr->next;
-        curr->next = prev;
-        prev = curr;
-        curr = next;
+    Node<T>* new_head = nullptr;
+    for (Node<T>* node = other.head; node != nullptr; node = node->next) {
+        new_head = new Node<T>(node->data, new_head);
     }
-
-    // prev — это теперь голова развёрнутого списка
-    if (prev != nullptr) {
-        Node<T>* tail_of_reversed = prev;
-        while (tail_of_reversed->next != nullptr) {
-            tail_of_reversed = tail_of_reversed->next;
-        }
-        tail_of_reversed->next = head;
-        head = prev;
+    if (new_head) {
+        Node<T>* tail = new_head;
+        while (tail->next) tail = tail->next;
+        tail->next = head;
+        head = new_head;
     }
 }
 
@@ -246,21 +256,18 @@ LinkedList<T>::LinkedList(size_t count, const T& min_val, const T& max_val) : he
         }
     }
 }
+
 template<typename T>
-std::ostream& operator<<(std::ostream& os, const LinkedList<T>& list) {
-    if (list.head == nullptr) {
-        os << "(empty)";
-        return os;
+void LinkedList<T>::print_forward(std::ostream& os) const {
+    if (head == nullptr) {
+        os << "(empty)\n";
+        return;
     }
-
-    // Рекурсивная лямбда — самый элегантный способ
-    std::function<void(const Node<T>*)> print_reverse = [&](const Node<T>* node) {
-        if (node == nullptr) return;
-        print_reverse(node->next);
-        os << node->data;
-        if (node->next != nullptr) os << ' ';
-        };
-
-    print_reverse(list.head);
-    return os;
+    Node<T>* curr = head;
+    while (curr != nullptr) {
+        os << curr->data;
+        if (curr->next != nullptr) os << ' ';
+        curr = curr->next;
+    }
+    os << '\n';
 }
