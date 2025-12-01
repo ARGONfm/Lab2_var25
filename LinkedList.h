@@ -28,7 +28,9 @@ public:
     // Удаление элементов
     T pop_head();
     T pop_tail();
-
+    // Доступ по индексу (для чтения и записи)
+    T& operator[](size_t index);
+    const T& operator[](size_t index) const;
 };
 template<typename T>
 void LinkedList<T>::clear() {
@@ -97,4 +99,30 @@ T LinkedList<T>::pop_tail() {
     delete curr->next;
     curr->next = nullptr;
     return value;
+
+    template<typename T>
+    T& LinkedList<T>::operator[](size_t index) {
+        Node<T>* curr = head;
+        for (size_t i = 0; i < index; ++i) {
+            if (curr == nullptr)
+                throw std::out_of_range("operator[]: index out of range");
+            curr = curr->next;
+        }
+        if (curr == nullptr)
+            throw std::out_of_range("operator[]: index out of range");
+        return curr->data;
+    }
+
+    template<typename T>
+    const T& LinkedList<T>::operator[](size_t index) const {
+        Node<T>* curr = head;
+        for (size_t i = 0; i < index; ++i) {
+            if (curr == nullptr)
+                throw std::out_of_range("operator[] const: index out of range");
+            curr = curr->next;
+        }
+        if (curr == nullptr)
+            throw std::out_of_range("operator[] const: index out of range");
+        return curr->data;
+    }
 }
