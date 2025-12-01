@@ -36,6 +36,9 @@ public:
     LinkedList& operator=(const LinkedList& other);
     // Удаление всех узлов с заданным значением
     void delete_node(const T& value);
+    // Добавление другого списка в конец/начало
+    void push_tail(const LinkedList& other);
+    void push_head(const LinkedList& other);
 };
 
 template<typename T>
@@ -175,5 +178,38 @@ void LinkedList<T>::delete_node(const T& value) {
         else {
             curr = curr->next;
         }
+    }
+}
+
+template<typename T>
+void LinkedList<T>::push_tail(const LinkedList& other) {
+    Node<T>* curr = other.head;
+    while (curr != nullptr) {
+        push_tail(curr->data);
+        curr = curr->next;
+    }
+}
+
+template<typename T>
+void LinkedList<T>::push_head(const LinkedList& other) {
+    // Самый элегантный способ: копируем и разворачиваем вручную
+    Node<T>* prev = nullptr;
+    Node<T>* curr = other.head;
+
+    while (curr != nullptr) {
+        Node<T>* next = curr->next;
+        curr->next = prev;
+        prev = curr;
+        curr = next;
+    }
+
+    // prev — это теперь голова развёрнутого списка
+    if (prev != nullptr) {
+        Node<T>* tail_of_reversed = prev;
+        while (tail_of_reversed->next != nullptr) {
+            tail_of_reversed = tail_of_reversed->next;
+        }
+        tail_of_reversed->next = head;
+        head = prev;
     }
 }
