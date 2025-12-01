@@ -34,7 +34,10 @@ public:
     // Копирование и присваивание
     LinkedList(const LinkedList& other);
     LinkedList& operator=(const LinkedList& other);
+    // Удаление всех узлов с заданным значением
+    void delete_node(const T& value);
 };
+
 template<typename T>
 void LinkedList<T>::clear() {
     while (head != nullptr) {
@@ -43,6 +46,7 @@ void LinkedList<T>::clear() {
         delete temp;
     }
 }
+
 template<typename T>
 LinkedList<T>::~LinkedList() {
     clear();
@@ -102,50 +106,74 @@ T LinkedList<T>::pop_tail() {
     delete curr->next;
     curr->next = nullptr;
     return value;
+}
 
-    template<typename T>
-    T& LinkedList<T>::operator[](size_t index) {
-        Node<T>* curr = head;
-        for (size_t i = 0; i < index; ++i) {
-            if (curr == nullptr)
-                throw std::out_of_range("operator[]: index out of range");
-            curr = curr->next;
-        }
+template<typename T>
+T& LinkedList<T>::operator[](size_t index) {
+    Node<T>* curr = head;
+    for (size_t i = 0; i < index; ++i) {
         if (curr == nullptr)
             throw std::out_of_range("operator[]: index out of range");
-        return curr->data;
+        curr = curr->next;
     }
+    if (curr == nullptr)
+        throw std::out_of_range("operator[]: index out of range");
+    return curr->data;
+}
 
-    template<typename T>
-    const T& LinkedList<T>::operator[](size_t index) const {
-        Node<T>* curr = head;
-        for (size_t i = 0; i < index; ++i) {
-            if (curr == nullptr)
-                throw std::out_of_range("operator[] const: index out of range");
-            curr = curr->next;
-        }
+template<typename T>
+const T& LinkedList<T>::operator[](size_t index) const {
+    Node<T>* curr = head;
+    for (size_t i = 0; i < index; ++i) {
         if (curr == nullptr)
             throw std::out_of_range("operator[] const: index out of range");
-        return curr->data;
+        curr = curr->next;
     }
-    template<typename T>
-    LinkedList<T>::LinkedList(const LinkedList& other) : head(nullptr) {
-        Node<T>* curr = other.head;
-        while (curr != nullptr) {
-            push_tail(curr->data);
-            curr = curr->next;
-        }
+    if (curr == nullptr)
+        throw std::out_of_range("operator[] const: index out of range");
+    return curr->data;
+}
+
+template<typename T>
+LinkedList<T>::LinkedList(const LinkedList& other) : head(nullptr) {
+    Node<T>* curr = other.head;
+    while (curr != nullptr) {
+        push_tail(curr->data);
+        curr = curr->next;
+    }
+}
+
+template<typename T>
+LinkedList<T>& LinkedList<T>::operator=(const LinkedList& other) {
+    if (this == &other) return *this;
+    clear();
+    Node<T>* curr = other.head;
+    while (curr != nullptr) {
+        push_tail(curr->data);
+        curr = curr->next;
+    }
+    return *this;
+}
+
+template<typename T>
+void LinkedList<T>::delete_node(const T& value) {
+    // Удаляем с головы, пока совпадает
+    while (head != nullptr && head->data == value) {
+        Node<T>* temp = head;
+        head = head->next;
+        delete temp;
     }
 
-    template<typename T>
-    LinkedList<T>& LinkedList<T>::operator=(const LinkedList& other) {
-        if (this == &other) return *this;
-        clear();
-        Node<T>* curr = other.head;
-        while (curr != nullptr) {
-            push_tail(curr->data);
+    // Удаляем в середине/хвосте
+    Node<T>* curr = head;
+    while (curr != nullptr && curr->next != nullptr) {
+        if (curr->next->data == value) {
+            Node<T>* temp = curr->next;
+            curr->next = temp->next;
+            delete temp;
+        }
+        else {
             curr = curr->next;
         }
-        return *this;
     }
 }
